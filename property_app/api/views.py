@@ -17,8 +17,24 @@ def property_list(request):
         else:
             return Response(serializer.errors)
 
-@api_view(['GET'])
+@api_view(['GET', 'PUT', 'DELETE'])
 def property_detail(request, pk):
-    property = Property.objects.get(pk=pk)
-    serializer = PropertySerializer(property)
-    return Response(serializer.data)
+    if request.method == 'GET':
+        property = Property.objects.get(pk=pk)
+        serializer = PropertySerializer(property)
+        return Response(serializer.data)
+    if request.method == 'PUT':
+        property = Property.objects.get(pk=pk)
+        serializer =PropertySerializer(property, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data) 
+        else:
+            return Response(serializer.errors)
+    if request.method == 'DELETE': 
+        property = Property.objects.get(pk=pk)  
+        property.delete()
+        data = {
+            'result': True
+        }
+        return Response(data)

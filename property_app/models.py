@@ -15,8 +15,8 @@ class Property(models.Model):
     class Meta:
        verbose_name_plural = "Properties"
        
-    def save(self, **kwargs):
-        self.address = self.address.upper()
-        super(Property,self).save()   
+    # def save(self, **kwargs):
+    #     self.address = self.address.upper()
+    #     super(Property,self).save()   
     
     
