@@ -1,6 +1,7 @@
-from django.contrib import admin
 from django.urls import path
 
+from property_app.views import property_list
+
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('list/', property_list, name='property-list'),
 ]

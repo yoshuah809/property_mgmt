@@ -12,4 +12,11 @@ class Property(models.Model):
     def __str__(self):
         return self.address
     
+    class Meta:
+       verbose_name_plural = "Properties"
+       
+    def save(self, **kwargs):
+        self.address = self.address.upper()
+        super(Property,self).save()   
+    
     
