@@ -2,9 +2,13 @@ from rest_framework import serializers
 
 from property_app.models import Property
 
+def column_length(value):
+    if len(value) < 2:
+        raise serializers.ValidationError('The address you entered is too short, it has to be more than 2 characteres')
+
 class PropertySerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
-    address = serializers.CharField()
+    address = serializers.CharField(validators=[column_length])
     country = serializers.CharField()
     description = serializers.CharField()
     active = serializers.BooleanField()
@@ -22,3 +26,8 @@ class PropertySerializer(serializers.Serializer):
         
         instance.save()
         return instance
+    
+    def validate(self, data):
+        if data['address']==data['country']:
+            raise serializers.ValidationError('The address and country should not be the same')
+        
