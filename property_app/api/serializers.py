@@ -1,23 +1,27 @@
 from rest_framework import serializers
 from property_app.models import Property, Company
 
-
-class CompanySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Company
-        fields = '__all__'
-        
-
 class PropertySerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = Property
         fields = '__all__'
         #exclude = ['id']
         #fields = ['id','country', 'description', 'address']
 
-    def validate(self, data):
-        if data['address']==data['country']:
-            raise serializers.ValidationError('The address and country should not be the same')
+    # def validate(self, data):
+    #     if data['address']==data['country']:
+    #         raise serializers.ValidationError('The address and country should not be the same')
+
+class CompanySerializer(serializers.ModelSerializer):
+    #property = PropertySerializer(many=True, read_only=True)
+    #properties = serializers.StringRelatedField(many=True, read_only=True)
+    properties = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='property-detail')
+    class Meta:
+        model = Company
+        fields = '__all__'
+        
+
         
         
         

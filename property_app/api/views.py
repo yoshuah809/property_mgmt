@@ -1,9 +1,57 @@
-from property_app.api.serializers import PropertySerializer
-from property_app.models import Property
+from property_app.api.serializers import PropertySerializer, CompanySerializer
+from property_app.models import Property, Company
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.views import APIView
+
+class CompanyListAPIView(APIView):
+    def get(self, request):
+        companies = Company.objects.all()
+        serializer =CompanySerializer(companies, many=True, context={'request': request})
+        return Response(serializer.data)
+    
+    def post(self, request):
+        serializer =CompanySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)     
+
+class CompanyDetailsAPIView(APIView):
+    def get(self, request, pk):
+        try:
+            company = Company.objects.get(pk=pk)
+        except Company.DoesNotExist:
+            return Response({'Error': 'Property does not exist'}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = CompanySerializer(company, context={'request': request})
+        return Response(serializer.data)
+    
+    def put(self, request, pk):
+        try:
+            company = Company.objects.get(pk=pk)
+        except Company.DoesNotExist:
+            return Response({'Error': 'Company does not exist'}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = CompanySerializer(company, data=request.data)
+        if serializer.is_valid():
+           serializer.save()
+           return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                
+    def delete(self, request, pk):
+        try:
+            company = Company.objects.get(pk=pk)
+        except Company.DoesNotExist:
+            return Response({'Error': 'Company does not exist'}, status=status.HTTP_404_NOT_FOUND)   
+        
+        company.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 
 class PropertyListAPIView(APIView):
     
