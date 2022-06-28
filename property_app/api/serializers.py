@@ -1,8 +1,14 @@
 from rest_framework import serializers
-from property_app.models import Property, Company
+from property_app.models import Property, Company, Comment
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = '__all__'
+
 
 class PropertySerializer(serializers.ModelSerializer):
-    
+    comments = CommentSerializer(many=True, read_only=True)
     class Meta:
         model = Property
         fields = '__all__'
