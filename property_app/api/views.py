@@ -1,9 +1,28 @@
-from property_app.api.serializers import PropertySerializer, CompanySerializer
-from property_app.models import Property, Company
+from property_app.api.serializers import CommentSerializer, PropertySerializer, CompanySerializer
+from property_app.models import Comment, Property, Company
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from rest_framework import status
+from rest_framework import status, mixins,generics
 from rest_framework.views import APIView
+
+
+class CommentList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+    
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+class CommentDetail(mixins.RetrieveModelMixin, generics.GenericAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)    
+
 
 class CompanyListAPIView(APIView):
     def get(self, request):
