@@ -7,6 +7,6 @@ urlpatterns = [
     path('<int:pk>/', PropertyDetailsAPIView.as_view(), name='property-detail'),
     
     path('company/', CompanyListAPIView.as_view(), name='company-list'),
-    path('company/<int:pk>/', CompanyDetailsAPIView.as_view(), name='company-list'),
+    path('company/<int:pk>/', CompanyDetailsAPIView.as_view(), name='company-detail'),
     
 ]

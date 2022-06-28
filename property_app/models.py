@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator,MaxValueValidator
 
 # Create your models here.
     
@@ -35,3 +36,14 @@ class Property(models.Model):
     # def save(self, **kwargs):
     #     self.address = self.address.upper()
     #     super(Property,self).save()   
+    
+class Comment(models.Model):
+    rating = models.PositiveIntegerField(validators=[MinValueValidator(1),MaxValueValidator(5)])
+    description = models.CharField(max_length=200, null=True, blank=True)
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name="comments")
+    active = models.BooleanField(default=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return str(self.rating)
