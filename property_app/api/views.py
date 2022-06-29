@@ -1,3 +1,4 @@
+from rest_framework.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from property_app.api.serializers import CommentSerializer, PropertySerializer, CompanySerializer
 from property_app.models import Comment, Property, Company
@@ -9,10 +10,21 @@ from rest_framework.views import APIView
 
 class CommentCreate(generics.CreateAPIView):
     serializer_class = CommentSerializer
+    
+    def get_queryset(self):
+        return Comment.objects.all()
+    
     def perform_create(self, serializer):
         pk = self.kwargs.get('pk')
         property = Property.objects.get(pk=pk)
-        serializer.save(property = property)
+        
+        user=self.request.user
+        comment_queryset = Comment.objects.filter(property =property, user_account=user)
+        
+        if comment_queryset.exists():
+            raise ValidationError("The user already has a comment for this property")
+        serializer.save(property=property, user_account=user)
+        
     
 
 class CommentList(generics.ListCreateAPIView):
@@ -75,7 +87,7 @@ class CompanyViewSet(viewsets.ViewSet):
         serializer = CompanySerializer(company, data=request.data)
         if serializer.is_valid():
            serializer.save()
-           return Response(serializer.data)
+           return Response(serializer.data, status = status.HTTP_202_ACCEPTED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)       
         

@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator,MaxValueValidator
+from django.contrib.auth.models import User
 
 # Create your models here.
     
@@ -39,6 +40,7 @@ class Property(models.Model):
     
 class Comment(models.Model):
     rating = models.PositiveIntegerField(validators=[MinValueValidator(1),MaxValueValidator(5)])
+    user_account = models.ForeignKey(User, on_delete=models.CASCADE)
     description = models.CharField(max_length=200, null=True, blank=True)
     property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name="comments")
     active = models.BooleanField(default=True)

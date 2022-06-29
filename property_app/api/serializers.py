@@ -2,6 +2,7 @@ from rest_framework import serializers
 from property_app.models import Property, Company, Comment
 
 class CommentSerializer(serializers.ModelSerializer):
+    user_account = serializers.StringRelatedField(read_only=True)
     class Meta:
         model = Comment
         fields = '__all__'
