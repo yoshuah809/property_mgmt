@@ -24,6 +24,8 @@ class Property(models.Model):
     description = models.CharField(max_length=500)
     images = models.CharField(max_length=900)
     active = models.BooleanField(default=True)
+    avg_rating = models.FloatField(default=0)
+    rating_qty = models.IntegerField(default=0)
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='properties', default=1, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     
