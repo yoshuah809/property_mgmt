@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status, mixins,generics,viewsets
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 
 
 class CommentCreate(generics.CreateAPIView):
@@ -58,6 +59,7 @@ class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
 #         return self.retrieve(request, *args, **kwargs)    
 
 class CompanyViewSet(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated]
     def list(self, request):
         queryset = Company.objects.all()
         serializer = CompanySerializer(queryset, many=True)
