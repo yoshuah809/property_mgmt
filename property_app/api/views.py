@@ -25,6 +25,15 @@ class CommentCreate(generics.CreateAPIView):
         
         if comment_queryset.exists():
             raise ValidationError("The user already has a comment for this property")
+        
+        if property.rating_qty == 0:
+            property.avg_rating = serializer.validated_data['rating']
+        else:
+            property.avg_rating = (serializer.validated_data['rating']+ property.avg_rating) / 2
+            
+        property.rating_qty += 1    
+        property.save()    
+        
         serializer.save(property=property, user_account=user)
         
     
