@@ -1,5 +1,6 @@
 from rest_framework.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
+from property_app.api.permissions import AdminOrReadOnly
 from property_app.api.serializers import CommentSerializer, PropertySerializer, CompanySerializer
 from property_app.models import Comment, Property, Company
 from rest_framework.response import Response
@@ -59,7 +60,7 @@ class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
 #         return self.retrieve(request, *args, **kwargs)    
 
 class CompanyViewSet(viewsets.ViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AdminOrReadOnly]
     def list(self, request):
         queryset = Company.objects.all()
         serializer = CompanySerializer(queryset, many=True)
