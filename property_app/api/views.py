@@ -41,6 +41,7 @@ class CommentCreate(generics.CreateAPIView):
 class CommentList(generics.ListCreateAPIView):
     #queryset = Comment.Objects.all()
     serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticated]
     def get_queryset(self):
         pk = self.kwargs['pk']
         return Comment.objects.filter(property=pk)
