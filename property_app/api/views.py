@@ -1,6 +1,6 @@
 from rest_framework.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
-from property_app.api.permissions import AdminOrReadOnly
+from property_app.api.permissions import AdminOrReadOnly, CommentUserOrReadOnly
 from property_app.api.serializers import CommentSerializer, PropertySerializer, CompanySerializer
 from property_app.models import Comment, Property, Company
 from rest_framework.response import Response
@@ -40,6 +40,7 @@ class CommentList(generics.ListCreateAPIView):
 class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+    permission_classes = [CommentUserOrReadOnly]
         
 
 # class CommentList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
