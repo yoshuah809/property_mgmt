@@ -1,6 +1,6 @@
 from rest_framework.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
-from property_app.api.permissions import AdminOrReadOnly, CommentUserOrReadOnly
+from property_app.api.permissions import IsAdminOrReadOnly, IsCommentUserOrReadOnly
 from property_app.api.serializers import CommentSerializer, PropertySerializer, CompanySerializer
 from property_app.models import Comment, Property, Company
 from rest_framework.response import Response
@@ -12,6 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 
 class CommentCreate(generics.CreateAPIView):
     serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
         return Comment.objects.all()
@@ -50,7 +51,7 @@ class CommentList(generics.ListCreateAPIView):
 class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    permission_classes = [CommentUserOrReadOnly]
+    permission_classes = [IsCommentUserOrReadOnly]
         
 
 # class CommentList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
@@ -66,12 +67,14 @@ class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
 # class CommentDetail(mixins.RetrieveModelMixin, generics.GenericAPIView):
 #     queryset = Comment.objects.all()
 #     serializer_class = CommentSerializer
-    
+    #IsAdminOrReadOnly
+
 #     def get(self, request, *args, **kwargs):
 #         return self.retrieve(request, *args, **kwargs)    
 
 class CompanyViewSet(viewsets.ViewSet):
-    permission_classes = [AdminOrReadOnly]
+    permission_classes = [IsAdminOrReadOnly]
+    
     def list(self, request):
         queryset = Company.objects.all()
         serializer = CompanySerializer(queryset, many=True)
@@ -114,6 +117,7 @@ class CompanyViewSet(viewsets.ViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)    
 
 class CompanyListAPIView(APIView):
+    
     def get(self, request):
         companies = Company.objects.all()
         serializer =CompanySerializer(companies, many=True, context={'request': request})
@@ -162,7 +166,8 @@ class CompanyDetailsAPIView(APIView):
 
 
 class PropertyListAPIView(APIView):
-    
+    permission_classes = [IsAdminOrReadOnly]
+     
     def get(self, request):
         properties = Property.objects.all()
         serializer =PropertySerializer(properties, many=True)
@@ -178,6 +183,8 @@ class PropertyListAPIView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)        
         
 class PropertyDetailsAPIView(APIView):
+    permission_classes = [IsAdminOrReadOnly]
+    
     def get(self, request, pk):
         try:
             property = Property.objects.get(pk=pk)
